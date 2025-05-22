@@ -1,187 +1,57 @@
 # ClashOfCodes
 
+![ClashOfCodes Logo](https://via.placeholder.com/150x50?text=ClashOfCodes)
 
-1. Kernekoncept
+En platform hvor programmører kan udfordre hinanden i kodningskampe med brugerstemmer.
 
-- **Live Programming Duels**: 1v1 eller gruppe-mod-gruppe kodningskampe med valgfri tidsbegrænsning (5-60 min)
+## Features
 
-- **Community-judging**: Alle brugere kan se løsninger anonymt og stemme på bedste kode
+- 🔥 Live kodningskampe
+- 🏆 Brugerdefinerede udfordringer
+- 🏅 Eksklusive medaljer
+- 📊 Realtids leaderboard
+- 👨‍💻 IDE-lignende interface
 
-- **Custom Rules Engine**: Lav dine egne udfordringer med parametre som:
+## Teknologistack
 
-- Programmeringssprog
+- Frontend: HTML5, CSS3, JavaScript
+- Editor: Monaco Editor (samme som VS Code)
+- Authentication: Firebase
+- Hosting: GitHub Pages
 
-- Problemtype (algoritme, UI, AI, etc.)
+## Kom i gang
 
-- Vurderingskriterier (performance, læsbarhed, kreativitet)
+1. Klon repository:
+```bash
+git clone https://github.com/LEETronik/ClashOfCodes.git
+```
+2. Installer afhængigheder:
+```bash
+npm install
+```
+3. Start udviklingsserver:
+```bash
+npm start
+```
 
-- Tidsramme
+## Firebase Opsætning
 
+1. Opret projekt på [Firebase Console](https://console.firebase.google.com/)
+2. I `auth.js`, udskift konfigurationen med dine egne credentials
+3. Aktivér Email/Password authentication i Firebase Console
 
-### 2. Teknisk Struktur
+## GitHub Pages Deployment
 
-**Frontend:**
+1. Gå til repository indstillinger
+2. Vælg "Pages" i menuen
+3. Vælg "main" branch og "root" mappe
+4. Gem - siden vil være live på:
+`https://LEETronik.github.io/ClashOfCodes`
 
-- Interaktiv code editor (Monaco Editor)
+## Bidrag
 
-- Live spectator view med kode-streaming
+Bidrag er velkomne! Opret en issue eller send en pull request.
 
-- Resultatdashboard med heatmaps af stemmefordeling
+## Licens
 
-
-**Backend:**
-
-- Code Execution Microservice (Kubernetes med isolerede containere)
-
-- Voting System med vurderingsskalaer (1-5 på forskellige parametre)
-
-- Dynamic Rule Validator (tjekker om brugerdefinerede regler overholdes)
-
-
-**Database:**
-
-- Match histories med code diffs
-
-- User reputation scoring system
-
-- Medalje system med unlockable achievements
-
-
-### 3. Key Features
-
-- **Challenge Builder**:
-
-- Drag-and-drop interface til at definere krav
-
-- Auto-genereret test suite som deltagerne skal passere
-
-- Mulighed for at tilføje "secret test cases"
-
-
-- **Code Battle Arena**:
-
-- Live leaderboard under konkurrencen
-
-- Pair programming mode
-
-- Replay system med kommentarspor
-
-
-- **Community Tools**:
-
-- Code review boards
-
-- Weekly spotlight tournaments
-
-- Mentor-program for nye brugere
-
-
-### 4. Sikkerhedsforanstaltninger
-
-- AI-baseret cheat detection (kodeplagiat-checker)
-
-- Two-layer code execution (sandbox + runtime restrictions)
-
-- Anonymiseret kodevurdering med bias-detection algoritmer
-
-
-### 5. Roadmap
-
-**Fase 1 (MVP):**
-
-- Grundlæggende 1v1 system
-
-- Basis medalje system
-
-- Manuel code review queue
-
-
-**Fase 2:**
-
-- Automated tournament brackets
-
-- Team creation tools
-
-- Sponsoreret challenges fra tech virksomheder
-
-
-**Fase 3:**
-
-- LAN-event integration
-
-- Code streaming til Twitch/YouTube
-
-- Pro-league med kontrakter
-
-
-### 6. Unikke Elementer
-
-- **Dynamic Difficulty Adjustment**: Automatisk justering af udfordringsniveau baseret på deltagernes skill
-
-- **Code Genetics Lab**: Visuelt system der kombinerer vinderkode fra tidligere kampe
-
-- **Bug Bounty Mode**: Modstandere kan sætte præmier på at finde fejl i hinandens kode
-
-
-### 7. Monetisering
-
-- Crowdfundede præmiepuljer
-
-- Premium team management tools
-
-- Corporate sponsorship slots
-
-- Virtual goods til code editoren
-
-
-### 8. Teknologi Valg
-
-- WebAssembly til client-side kodeudførelse
-
-- Redis til live leaderboards
-
-- WebSockets for real-time updates
-
-- TensorFlow.js til ML-baseret kodevurdering
-
-
-### 9. Community Management
-
-- Karma system for fair voting
-
-- Moderation dashboard for erfarenne brugere
-
-- Seasonal ranking resets
-
-- User-curated challenge marketplace
-
-
-
-
-
-
-
-
-
-
-### **1. Koncept og Nøglefunktioner**
-
-Baseret på din beskrivelse skal hjemmesiden have følgende kernefunktioner:
-
-- **Brugerprofiler**: Hver bruger har en profil, hvor de kan vise deres medaljer, statistikker (f.eks. antal vundne kampe), og tidligere konkurrencer.
-
-- **Konkurrencer**: Brugere kan oprette eller deltage i programmeringskonkurrencer, hvor de selv definerer spilleregler (f.eks. opgavetype, programmeringssprog, tidspres, eller specifikke mål som "hurtigste løsning" eller "mest optimerede kode").
-
-- **Afstemningssystem**: Når en konkurrence er afsluttet, kan internettets brugere (eller et udvalgt publikum) stemme på vinderen baseret på de leverede løsninger.
-
-- **Medaljesystem**: Vindere optjener medaljer (f.eks. guld, sølv, bronze), der vises på deres profil.
-
-- **Skalerbarhed til events**: Mulighed for at organisere store events med flere deltagere, live-streaming, og potentielt præmiepenge i fremtiden.
-
-- **Sociale funktioner**: Mulighed for at dele konkurrencer, resultater eller profiler på sociale medier for at øge engagement.
-
-
-### **2. Teknologisk Stack**
-
-For at gøre hjemmesiden skalerbar, brugervenlig og nem at vedligeholde foreslår jeg følgende teknologier:
-
+[MIT](https://choosealicense.com/licenses/mit/)
