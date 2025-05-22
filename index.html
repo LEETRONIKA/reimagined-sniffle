@@ -9,6 +9,7 @@
     <!-- Tilføj Firebase og Monaco Editor -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.30.1/min/vs/loader.min.js"></script>
 </head>
 <body>
@@ -17,14 +18,72 @@
         <div id="login-screen" class="login-container">
             <div class="login-form">
                 <h1 class="login-title">CodeBattle</h1>
+                
+                <!-- Social Login Buttons -->
+                <div class="social-login">
+                    <button class="btn social-btn google" id="google-login">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
+                        Continue with Google
+                    </button>
+                    <button class="btn social-btn github" id="github-login">
+                        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub">
+                        Continue with GitHub
+                    </button>
+                    <button class="btn social-btn facebook" id="facebook-login">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook">
+                        Continue with Facebook
+                    </button>
+                    <button class="btn social-btn twitter" id="twitter-login">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Logo_of_Twitter.svg" alt="Twitter">
+                        Continue with Twitter
+                    </button>
+                </div>
+                
+                <div class="divider">or</div>
+                
+                <!-- Email Login -->
                 <input type="email" id="email" placeholder="Email" class="form-input">
                 <input type="password" id="password" placeholder="Password" class="form-input">
-                <button class="btn" onclick="login()">Login</button>
-                <button class="btn" onclick="signup()">Opret bruger</button>
-                <div class="status-bar">
-                    <span>⚡ Powered by CodeBattle</span>
-                    <span><span class="loading">⚙️</span> Initializing</span>
+                <button class="btn" id="login-btn">Login</button>
+                
+                <!-- Phone Login Option -->
+                <div class="phone-login" style="display:none;">
+                    <input type="tel" id="phone-number" placeholder="+1 123-456-7890" class="form-input">
+                    <button class="btn" id="send-otp">Send Verification Code</button>
+                    <div id="verify-otp" style="display:none;">
+                        <input type="text" id="otp-code" placeholder="Enter 6-digit code" class="form-input">
+                        <button class="btn" id="verify-otp-btn">Verify Code</button>
+                    </div>
                 </div>
+                
+                <!-- Additional Options -->
+                <div class="auth-options">
+                    <a href="#" id="forgot-password">Forgot password?</a>
+                    <span>Don't have an account? <a href="#" id="show-signup">Sign up</a></span>
+                </div>
+                
+                <!-- Signup Form (initially hidden) -->
+                <div id="signup-form" style="display:none;">
+                    <input type="email" id="signup-email" placeholder="Email" class="form-input">
+                    <input type="password" id="signup-password" placeholder="Password" class="form-input">
+                    <button class="btn" id="signup-btn">Create Account</button>
+                    <div class="auth-options">
+                        <span>Already have an account? <a href="#" id="show-login">Log in</a></span>
+                    </div>
+                </div>
+                
+                <!-- Password Reset Form (initially hidden) -->
+                <div id="reset-form" style="display:none;">
+                    <p>Enter your email to receive a password reset link</p>
+                    <input type="email" id="reset-email" placeholder="Email" class="form-input">
+                    <button class="btn" id="reset-btn">Send Reset Link</button>
+                    <div class="auth-options">
+                        <a href="#" id="cancel-reset">Back to login</a>
+                    </div>
+                </div>
+                
+                <!-- Status Messages -->
+                <div id="auth-message" class="auth-message"></div>
             </div>
         </div>
 
@@ -33,14 +92,16 @@
             <header>
                 <h1>CodeBattle <span style="color:#b5cea8;font-size:0.8em;">// Competitive Programming Platform</span></h1>
                 <nav>
-                    <a href="#">Home</a>
-                    <a href="#">Challenges</a>
-                    <a href="#">Leaderboard</a>
-                    <a href="#">Docs</a>
+                    <a href="#" onclick="showSection('home')">Home</a>
+                    <a href="#" onclick="showSection('challenges')">Challenges</a>
+                    <a href="#" onclick="showSection('profile')">Profile</a>
+                    <a href="#" onclick="showSection('leaderboard')">Leaderboard</a>
                 </nav>
+                <button class="btn-small" onclick="logout()">Logout</button>
             </header>
 
-            <div class="container">
+            <!-- Home Section -->
+            <div id="home-section" class="container section">
                 <div class="battle-card">
                     <h2>Aktiv kamp</h2>
                     <p>Python: Skriv den hurtigste algoritme til at sortere en liste</p>
@@ -60,10 +121,114 @@
                     <button class="btn" onclick="submitSolution()">Indsend løsning</button>
                 </div>
             </div>
+
+            <!-- Profile Section -->
+            <div id="profile-section" class="container section" style="display:none;">
+                <div class="profile-card">
+                    <h2>Your Profile</h2>
+                    <div class="form-group">
+                        <label>Display Name</label>
+                        <input type="text" id="display-name" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Bio</label>
+                        <textarea id="profile-bio" class="form-input"></textarea>
+                    </div>
+                    <button class="btn" onclick="updateProfile()">Save Profile</button>
+                </div>
+
+                <div id="two-factor-section" class="profile-section" style="display:none;">
+                    <h3>Two-Factor Authentication</h3>
+                    <div id="2fa-status">Status: Not enabled</div>
+                    <button class="btn" id="enable-2fa">Enable 2FA</button>
+                    <div id="2fa-setup" style="display:none;">
+                        <input type="tel" id="2fa-phone" placeholder="+1 123-456-7890" class="form-input">
+                        <button class="btn" id="send-2fa-code">Send Verification Code</button>
+                        <div id="verify-2fa-code" style="display:none;">
+                            <input type="text" id="2fa-code" placeholder="Enter 6-digit code" class="form-input">
+                            <button class="btn" id="verify-2fa-btn">Verify & Enable</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="achievements-card">
+                    <h2>Your Achievements</h2>
+                    <div class="achievement-stats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="total-wins">0</span>
+                            <span class="stat-label">Total Wins</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="total-medals">0</span>
+                            <span class="stat-label">Medals Earned</span>
+                        </div>
+                    </div>
+                    <div id="medals-container" class="medals-grid"></div>
+                </div>
+            </div>
+
+            <!-- Challenges Section -->
+            <div id="challenges-section" class="container section" style="display:none;">
+                <div class="battle-card">
+                    <h2>Create New Competition</h2>
+                    <div class="form-group">
+                        <label>Competition Name</label>
+                        <input type="text" id="competition-name" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="competition-desc" class="form-input"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="competition-type" class="form-input">
+                            <option value="speed">Speed Challenge</option>
+                            <option value="efficiency">Efficiency Challenge</option>
+                            <option value="innovation">Innovation Challenge</option>
+                            <option value="debugging">Debugging Challenge</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Difficulty</label>
+                        <select id="competition-difficulty" class="form-input">
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="createCompetition()">Create</button>
+                </div>
+
+                <div id="active-competitions">
+                    <h2>Your Competitions</h2>
+                </div>
+            </div>
         </div>
     </div>
+    <!-- reCAPTCHA container (hidden) -->
+    <div id="recaptcha-container"></div>
     <!-- Ændre script tags til at bruge modules -->
     <script type="module" src="app.js"></script>
-    <script nomodule src="auth.js"></script>
+    <script type="module" src="profile.js"></script>
+    <script type="module">
+        import { login, signup, setupAuthStateListener } from './auth.js';
+        
+        document.getElementById('login-btn').addEventListener('click', async () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            await login(email, password);
+        });
+        
+        document.getElementById('signup-btn').addEventListener('click', async () => {
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            await signup(email, password);
+        });
+        
+        // Initialize auth state listener
+        setupAuthStateListener((user) => {
+            console.log('Auth state changed:', user);
+        });
+    </script>
 </body>
 </html>
